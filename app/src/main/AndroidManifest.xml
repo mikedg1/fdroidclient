@@ -66,7 +66,8 @@
             android:allowBackup="true"
             android:fullBackupContent="true"
             android:theme="@style/AppThemeLight"
-            android:supportsRtl="true">
+            android:supportsRtl="true"
+            android:banner="@drawable/banner" >
 
         <provider
                 android:authorities="${applicationId}.data.AppProvider"
