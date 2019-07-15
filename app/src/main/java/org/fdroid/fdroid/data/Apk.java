@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.fdroid.fdroid.Utils;
 import org.fdroid.fdroid.data.Schema.ApkTable.Cols;
@@ -43,6 +44,8 @@ import java.util.HashSet;
  * @see <a href="https://gitlab.com/fdroid/fdroiddata">fdroiddata</a>
  * @see <a href="https://gitlab.com/fdroid/fdroidserver">fdroidserver</a>
  */
+//MIKEDG was having problems with uses-permission
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Apk extends ValueObject implements Comparable<Apk>, Parcelable {
 
     // Using only byte-range keeps it only 8-bits in the SQLite database
@@ -274,8 +277,10 @@ public class Apk extends ValueObject implements Comparable<Apk>, Parcelable {
      */
     @JsonIgnore  // prevent tests from failing due to nulls in checkRepoAddress()
     public String getCanonicalUrl() {
+        //MIKEDG
         checkRepoAddress();
-        return repoAddress + "/" + apkName.replace(" ", "%20");
+//        return repoAddress + "/" + apkName.replace(" ", "%20");
+        return apkName.replace(" ", "%20"); //MIKEDG
     }
 
     /**
@@ -484,11 +489,14 @@ public class Apk extends ValueObject implements Comparable<Apk>, Parcelable {
         }
     }
 
-    @JsonProperty("uses-permission")
-    @SuppressWarnings("unused")
-    private void setUsesPermission(Object[][] permissions) {
-        setRequestedPermissions(permissions, 0);
-    }
+    //MIKEDG ignoring?
+    //MIKEDG ignoring?
+
+//    @JsonProperty("uses-permission")
+//    @SuppressWarnings("unused")
+//    private void setUsesPermission(Object[][] permissions) {
+//        setRequestedPermissions(permissions, 0);
+//    }
 
     @JsonProperty("uses-permission-sdk-23")
     @SuppressWarnings("unused")
