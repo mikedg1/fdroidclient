@@ -238,7 +238,9 @@ public class AppDetailsRecyclerViewAdapter
         String appropriateSig = app.getMostAppropriateSignature();
         for (int i = 0; i < versions.size(); i++) {
             final Apk apk = versions.get(i);
-            if (apk.versionCode == app.suggestedVersionCode && TextUtils.equals(apk.sig, appropriateSig)) {
+            if (apk.versionCode == app.suggestedVersionCode &&
+                    (TextUtils.equals(apk.sig, appropriateSig))
+            || (TextUtils.isEmpty(apk.sig) && TextUtils.isEmpty(appropriateSig))) { //MIKEDG expanded
                 curApk = apk;
                 break;
             }
