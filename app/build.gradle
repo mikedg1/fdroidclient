@@ -4,12 +4,12 @@ apply plugin: 'pmd'
 
 /* gets the version name from the latest Git tag, stripping the leading v off */
 def getVersionName = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'describe', '--tags', '--always'
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
+//    def stdout = new ByteArrayOutputStream()
+//    exec {
+//        commandLine 'git', 'describe', '--tags', '--always'
+//        standardOutput = stdout
+//    }
+    return '1'
 }
 
 def isCi = "true".equals(System.getenv("CI"))
