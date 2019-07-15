@@ -112,7 +112,7 @@ public class IndexUpdater {
         this.context = context;
         this.repo = repo;
         this.persister = new RepoPersister(context, repo);
-        this.indexUrl = getIndexUrl(repo);
+        this.indexUrl = getIndexUrl(repo); //MIKEDG: should I be changing this?
     }
 
     protected String getIndexUrl(@NonNull Repo repo) {

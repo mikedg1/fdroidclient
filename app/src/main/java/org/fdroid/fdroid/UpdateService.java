@@ -444,8 +444,8 @@ public class UpdateService extends JobIntentService {
                     InstalledAppProviderService.compareToPackageManager(this);
                 }
             } else if (!fdroidPrefs.isBackgroundDownloadAllowed() && !fdroidPrefs.isOnDemandDownloadAllowed()) {
-                Utils.debugLog(TAG, "don't run update");
-                return;
+//                Utils.debugLog(TAG, "don't run update");
+//                return;
             }
 
             setNotification();

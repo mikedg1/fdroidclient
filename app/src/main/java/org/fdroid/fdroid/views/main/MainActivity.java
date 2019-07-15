@@ -199,10 +199,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     }
 
     private void initialRepoUpdateIfRequired() {
-        if (Preferences.get().isIndexNeverUpdated() && !UpdateService.isUpdating()) {
+//        if (Preferences.get().isIndexNeverUpdated() && !UpdateService.isUpdating()) {
             Utils.debugLog(TAG, "We haven't done an update yet. Forcing repo update.");
             UpdateService.updateNow(this);
-        }
+//        }
     }
 
     @Override

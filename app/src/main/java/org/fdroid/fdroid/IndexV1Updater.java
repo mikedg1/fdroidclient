@@ -52,6 +52,7 @@ import javax.net.ssl.SSLKeyException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLProtocolException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
@@ -102,9 +103,9 @@ public class IndexV1Updater extends IndexUpdater {
      */
     protected String getIndexUrl(@NonNull Repo repo) {
         if (repo.address.startsWith("content://")) {
-            return repo.address + "%2F" + SIGNED_FILE_NAME;
+            return repo.address + "%2F" + DATA_FILE_NAME;//MIKEDG chaged to data file name from signed
         } else {
-            return Uri.parse(repo.address).buildUpon().appendPath(SIGNED_FILE_NAME).build().toString();
+            return Uri.parse(repo.address).buildUpon().appendPath(DATA_FILE_NAME).build().toString(); //MIKEDG chaged to data file name from signed
         }
     }
 
@@ -132,11 +133,12 @@ public class IndexV1Updater extends IndexUpdater {
             }
             hasChanged = downloader.hasChanged();
 
-            if (!hasChanged) {
-                return true;
-            }
+            //MIKEDG
+//            if (!hasChanged) {
+//                return true;
+//            }
 
-            processDownloadedIndex(downloader.outputFile, downloader.getCacheTag());
+            newProcessDownloadedIndex(downloader.outputFile, downloader.getCacheTag());
         } catch (ConnectException | HttpRetryException | NoRouteToHostException | SocketTimeoutException
                 | SSLHandshakeException | SSLKeyException | SSLPeerUnverifiedException | SSLProtocolException
                 | ProtocolException | UnknownHostException e) {
@@ -165,7 +167,7 @@ public class IndexV1Updater extends IndexUpdater {
                         return true;
                     }
 
-                    processDownloadedIndex(downloader.outputFile, downloader.getCacheTag());
+                    newProcessDownloadedIndex(downloader.outputFile, downloader.getCacheTag());
                     break;
                 } catch (ConnectException | HttpRetryException | NoRouteToHostException | SocketTimeoutException
                         | SSLHandshakeException | SSLKeyException | SSLPeerUnverifiedException | SSLProtocolException
@@ -193,15 +195,28 @@ public class IndexV1Updater extends IndexUpdater {
         return true;
     }
 
-    private void processDownloadedIndex(File outputFile, String cacheTag)
+    //MIKEDG
+
+    private void newProcessDownloadedIndex(File outputFile, String cacheTag)
             throws IOException, IndexUpdater.UpdateException {
-        JarFile jarFile = new JarFile(outputFile, true);
-        JarEntry indexEntry = (JarEntry) jarFile.getEntry(DATA_FILE_NAME);
-        InputStream indexInputStream = new ProgressBufferedInputStream(jarFile.getInputStream(indexEntry),
-                processIndexListener, (int) indexEntry.getSize());
-        processIndexV1(indexInputStream, indexEntry, cacheTag);
-        jarFile.close();
+        //MIKEDG Just use the index file here?
+//        JarFile jarFile = new JarFile(outputFile, true);
+//        JarEntry indexEntry = (JarEntry) jarFile.getEntry(DATA_FILE_NAME);
+        InputStream indexInputStream = new FileInputStream(outputFile);
+
+        processIndexV1(indexInputStream, cacheTag);
+//        jarFile.close();
     }
+
+//    private void processDownloadedIndex(File outputFile, String cacheTag)
+//            throws IOException, IndexUpdater.UpdateException {
+//        JarFile jarFile = new JarFile(outputFile, true);
+//        JarEntry indexEntry = (JarEntry) jarFile.getEntry(DATA_FILE_NAME);
+//        InputStream indexInputStream = new ProgressBufferedInputStream(jarFile.getInputStream(indexEntry),
+//                processIndexListener, (int) indexEntry.getSize());
+//        processIndexV1(indexInputStream, indexEntry, cacheTag);
+//        jarFile.close();
+//    }
 
     /**
      * Get the standard {@link ObjectMapper} instance used for parsing {@code index-v1.json}.
@@ -235,7 +250,7 @@ public class IndexV1Updater extends IndexUpdater {
      * @throws IOException
      * @throws UpdateException
      */
-    public void processIndexV1(InputStream indexInputStream, JarEntry indexEntry, String etag)
+    public void processIndexV1(InputStream indexInputStream, String etag)
             throws IOException, UpdateException {
         Utils.Profiler profiler = new Utils.Profiler(TAG);
         profiler.log("Starting to process index-v1.json");
@@ -282,8 +297,8 @@ public class IndexV1Updater extends IndexUpdater {
                     + timestamp + " < " + repo.timestamp);
         }
 
-        X509Certificate certificate = getSigningCertFromJar(indexEntry);
-        verifySigningCertificate(certificate);
+//        X509Certificate certificate = getSigningCertFromJar(indexEntry);
+//        verifySigningCertificate(certificate);
 
         profiler.log("Certificate verified. Now saving to database...");
 

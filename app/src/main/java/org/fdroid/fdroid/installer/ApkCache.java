@@ -23,6 +23,9 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
+import android.text.TextUtils;
+
+import com.google.zxing.common.StringUtils;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import org.apache.commons.io.FileUtils;
 import org.fdroid.fdroid.Hasher;
@@ -30,6 +33,7 @@ import org.fdroid.fdroid.data.Apk;
 import org.fdroid.fdroid.data.App;
 import org.fdroid.fdroid.data.AppProvider;
 import org.fdroid.fdroid.data.SanitizedFile;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,9 +93,12 @@ public class ApkCache {
         FileUtils.copyFile(apkFile, sanitizedApkFile);
 
         // verify copied file's hash with expected hash from Apk class
-        if (verifyHash && !Hasher.isFileMatchingHash(sanitizedApkFile, hash, hashType)) {
-            FileUtils.deleteQuietly(apkFile);
-            throw new IOException(apkFile + " failed to verify!");
+        //MIKEDG: check hashes?
+        if (!TextUtils.isEmpty(hash)) { //MIKEDG security issue
+            if (verifyHash && !Hasher.isFileMatchingHash(sanitizedApkFile, hash, hashType)) {
+                FileUtils.deleteQuietly(apkFile);
+                throw new IOException(apkFile + " failed to verify!");
+            }
         }
 
         // 20 minutes the start of the install process, delete the file
